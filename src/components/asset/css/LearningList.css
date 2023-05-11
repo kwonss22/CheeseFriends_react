@@ -1,3 +1,6 @@
+* {
+    font-family: 고딕, arial;
+}
 .learninglist{
     width: 1200px;
     height: 500px;
@@ -6,14 +9,50 @@
     justify-content: space-between;
     align-items: center;
 }
+.learnh2 {
+    font-size: 2em;
+    font-weight: bold;
+    color: #434343;
+    margin-left: 33px;
+    margin-top: -28px;
+}
 
-.learnBtn {
-    width: 221px;
+.learnBtn, .taskBtn, .qnabtn {
+    width: 200px;
     background-color: #fbca73;
     color: white;
+    border-radius: 6px;
+    font-size: 19px;
+    height: 28px;
+    font-weight: bold;
+    margin-top: 3px;
+    margin-bottom: 6px;
+    height: 31px;
 }
 .learnBtn:hover {
     border: 2px solid #fbca73;
     background-color: white;
     color: #434343;
+}
+
+.searchbtn {
+    border-radius: 4px;
+}
+.searchbtn:hover {
+    border: 2px solid #fac463;
+    background: white;
+    color: #444;
+    
+}
+.taskBtn:hover {
+    border: 2px solid #fac463;
+    background: white;
+    color: #444;
+    
+}
+.qnabtn:hover {
+    border: 2px solid #fac463;
+    background: white;
+    color: #444;
+    
 }

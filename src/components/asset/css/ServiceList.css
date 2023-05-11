@@ -1,3 +1,12 @@
+.servicelist{
+    width: 1200px;
+    height: 500px;
+    margin: 100px auto 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .fontWrapper {
     width: 980px;
     height: 100px;
@@ -8,6 +17,13 @@
     color: #434343;
 }
 
+.servh2 {
+    font-size: 2em;
+    color: #434343;
+    font-weight: bold;
+    margin-left: 46px;
+    margin-top: -33px;
+}
 .ser {
     font-size: 4.7em;
     cursor: pointer;
@@ -34,10 +50,12 @@
     background: #434343;
 }
 
-.contentwrapper {
-    display: block;
-    margin-top: 20px;
-    margin-left: 69px;
+.contentwrappers {
+
+    position: fixed;
+    left: 690px;
+    top: 150px;
+
 }
 
 .ptag {
@@ -70,4 +88,21 @@
 .modalcss>p{
     font-size: 20px;
     line-height: 1.5;
+}
+.answerbtn {
+    font-size: 1em;
+    font-weight: bold;
+    background: #fbca73;
+    border-radius: 4px;
+    width: 130px;
+    height: 36px;
+    color: white;
+}
+.answerbtna:hover {
+    color: #434343;
+}
+.answerbtn:hover {
+    border: 2px solid #fbca73;
+    color: #434343;
+
 }

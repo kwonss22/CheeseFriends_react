@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './asset/css/LectureWrite.css'
 
 import axios from "axios";
-import { navigate, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 
 function LearningWrite() {
@@ -11,6 +11,9 @@ function LearningWrite() {
     const [title, setTitle] = useState('');
     const [writer, setWriter] = useState('');
     const [content, setContent] = useState('');
+
+    const login = JSON.parse(localStorage.getItem("login"));
+    const userName = login.name;
 
     const navigate = useNavigate();
 
@@ -32,7 +35,7 @@ function LearningWrite() {
     .then(res=>{
        console.log(res.data);
        alert('자료 업로드에 성공했습니다');
-       navigate('/learning');
+       navigate('/cheesefriends/learning');
     })
     .catch(function(error){
        alert('자료 업로드에 실패했습니다');
@@ -41,12 +44,12 @@ function LearningWrite() {
     axios.post('http://localhost:3000/writeLearning', null, { params: {
                 subject,
                 title,
-                writer,
+                writer:userName,
                 content
         }})
             .then( resp => {
             console.log(resp);
-            navigate('/learning');
+            navigate('/cheesefriends/learning');
             })
             .catch(err => console.log(err));
 
@@ -72,12 +75,12 @@ function LearningWrite() {
   }
 
     const resetBtn = () => {
-        navigate('/learning/LearningList');
+        navigate('/cheesefriends/learning');
     }
     
     const SelectBox = () => {
         return (
-            <select onChange={changeSelectOptionHandler} value={subject} style={{marginLeft:"60px", width:"190px", border:"none", borderBottom:"2px solid lightgray"}}>
+            <select onChange={changeSelectOptionHandler} value={subject} className='inputsubject'>
                 <option key="kor" value="국어">국어</option>
                 <option key="math" value="수학">수학</option>
                 <option key="eng" value="영어">영어</option>
@@ -93,39 +96,38 @@ function LearningWrite() {
 
    
         return (
-            <div style={{margin:"30px 150px 50px 150px", padding:"15px", fontSize:"17px"}}>
-                <h2>수업자료 등록</h2>
-                <hr/>
+            <div className='lecwritemain'>
+                <h2 className='lecmainh2'>수업자료 등록</h2>
+                
                 <form name="frm" onSubmit={onSubmit} encType="multipart/form-data" style={{textAlign:"left"}}>
                     <>
                     제목
-                    <input type="text" id='title' className='title' name='title'
+                    <input type="text" id='title' className='inputtitle' name='title'
                         value={title} onChange={(e) => setTitle(e.target.value)} />
                     </>
-                    <hr/>
+                    <br/>
                     <>
                     과목
                     <SelectBox />
                     </>
-                    <hr/>    
+                    <br/>
                     <>
                     작성자
-                    <input type="text" id='writer' className='writer' name='writer'
-                        value={writer}  onChange={(e) => setWriter(e.target.value)} />
+                    <input type="text" id='writer' className='inputwriter' name='writer'
+                        value={userName}  onChange={(e) => setWriter(e.target.value)} readOnly />
                     </>
-                    <hr/>
+                    <br/>
                     <>
                     내용
                     </>
-                    <input type="file" name="uploadFile" className='file' accept="*"  />
+                    <input type="file" name="uploadFile" className='inputfile' accept="*"  />
                     <br/>
-                    <textarea id='content' className='content' name='content'
+                    <textarea id='content' className='lecontent' name='content'
                         value={content} onChange={(e) => setContent(e.target.value)} />
-                    <hr/>
 
                     <div className='btnwrapper'>
-                        <button type='button' onClick={resetBtn}>취소</button>
-                        <button type='submit' value='file upload'>등록</button>
+                        <button type='button' className='resetbtn' style={{borderRadius:"4px"}} onClick={resetBtn}>취소</button>
+                        <button type='submit' className='submitbtn' style={{marginLeft:"15px"}} value='file upload'>등록</button>
                     </div>
                 </form>
             </div>
