@@ -96,46 +96,100 @@ function Learningmypage(){
         setModalOpen2(false);
     };
 
-    const yescloseModal2 = () => {
+    const yescloseModal2 = async () => {
         console.log("yescloseModal2 작동");
         setModalOpen2(false);
         // receiveraddbtn();
 
+        let statement = "";
+        let educode = "";
+
         for (let i = 0; i < sub_codechecked.length; i++) {
             console.log("sub_codechecked : " + sub_codechecked)
-            axios.get("http://localhost:3000/approvedcheck", { params: { "id":id, "subcode":sub_codechecked[i] } })
+            await axios.get("http://localhost:3000/approvedcheck", { params: { "id":id, "subcode":sub_codechecked[i] } })
             .then(function (resp) {
                 console.log("state : " + resp.data)
                 if(resp.data === 'quiting'){
                     alert("이미 수강중인 학습입니다")
+                    statement = resp.data;
                 }else if(resp.data === 'approving'){
                     alert("수강 승인 대기중인 학습입니다")
+                    statement = resp.data;
                 }else if(resp.data === 'quiting'){
                     alert("탈퇴 진행 중인 학습입니다")
+                    statement = resp.data;
                 }else if(resp.data === 'quited'){
-                    axios.get("http://localhost:3000/changeapproving", { params: { "id":id, "subcode":sub_codechecked[i] } })
-                    .then(function (resp) {
-    
-                    })
-                    .catch(function (err) {
-                        console.log(err);
-                        alert('err')
-                    })
+                    statement = resp.data;
                 }else{
-                    axios.get("http://localhost:3000/approving", { params: { "id":id, "subcode":sub_codechecked[i] } })
-                    .then(function (resp) {
-
-                    })
-                    .catch(function (err) {
-                        console.log(err);
-                        alert('err')
-                    })
+                    statement = "";
+                    
                 }
             })
             .catch(function (err) {
                 console.log(err);
                 alert('err')
             })
+
+            if(statement === 'quited'){
+                await axios.get("http://localhost:3000/changeapproving", { params: { "id":id, "subcode":sub_codechecked[i] } })
+                .then(function (resp) {
+
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    alert('err')
+                })
+
+                await axios.post("http://localhost:3000/educodematching", null, {params: {"sub_code": sub_codechecked[i]}})
+                .then(function (resp) {
+                    console.log(resp.data); 
+                    educode = resp.data;
+                })
+                .catch(function (err) {
+                    alert("err1");
+                    console.log(err);
+                })
+
+                await axios.post("http://localhost:3000/addusereducheck", null,{params: {"id": id,"educode": educode}})
+                .then(function (res) {
+                    
+                })
+                .catch(function (err) {
+                    alert("err");
+                    console.log(err);
+                })
+                
+            }else if(statement === ""){
+                await axios.get("http://localhost:3000/approving", { params: { "id":id, "subcode":sub_codechecked[i] } })
+                .then(function (resp) {
+
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    alert('err')
+                })
+
+                await axios.post("http://localhost:3000/educodematching", null, {params: {"sub_code": sub_codechecked[i]}})
+                .then(function (resp) {
+                    console.log(resp.data); 
+                    educode = resp.data;
+                })
+                .catch(function (err) {
+                    alert("err1");
+                    console.log(err);
+                })
+
+                await axios.post("http://localhost:3000/addusereducheck", null,{params: {"id": id,"educode": educode}})
+                .then(function (res) {
+                    
+                })
+                .catch(function (err) {
+                    alert("err");
+                    console.log(err);
+                })
+            }
+
+
         }
 
         alert("학습 추가 신청 완료되었습니다");
@@ -176,10 +230,10 @@ function Learningmypage(){
         console.log("search작동")
 
         if(choice.toString().trim() !== "" && search.toString().trim() !== ""){
-            navigate('/testmain/learningmypage/' + choice + "/" + search);
+            navigate('/cheesefriends/testmain/learningmypage/' + choice + "/" + search);
         }
         else{
-            navigate('/testmain/learningmypage/');
+            navigate('/cheesefriends/testmain/learningmypage/');
         }
         // 데이터를 다시 한번 갖고 온다
         setPage(1)
@@ -223,8 +277,16 @@ function Learningmypage(){
                 <td>{props.subjectlist.educatorname}</td>
                 {props.subjectlist.state === "approving"
                 ?<td>수강중인 수업이 아닙니다</td>
-                :<td>{props.subjectlist.startdate.substr(0, 11)} ~ {props.subjectlist.enddate.substr(0, 11)}</td>
+                :<td>{props.subjectlist.startdate !== "" && props.subjectlist.startdate !== null
+                    ?<span>{props.subjectlist.startdate.substr(0, 11)}</span>
+                    :<span>{props.subjectlist.startdate}</span>} ~ 
+                    {props.subjectlist.enddate !== "" && props.subjectlist.enddate !== null
+                    ?<span>{props.subjectlist.enddate.substr(0, 11)}</span>
+                    :<span>{props.subjectlist.enddate}</span>}
+                </td>
                 }
+
+                
                 {props.subjectlist.state === "approving"
                 ?<td>수강 승인중</td>
                 :<td>
@@ -321,7 +383,7 @@ function Learningmypage(){
         return(
             <React.Fragment>
                 <button onClick={openModal3} className={`${styles.confirmBtn} ${styles.delBtn}`}>탈퇴 신청 취소하기</button>
-                <Cancelmodal open3={modalOpen3} close3={closeModal3} yesclose3={yescloseModal3} header="탈퇴 신청 취소하기">
+                <Cancelmodal open3={modalOpen3} close3={closeModal3} yesclose3={yescloseModal3} header3="탈퇴 신청 취소하기">
                 <main>  
                     탈퇴신청 취소하기 하시겠습니까?
                 </main>        
@@ -512,7 +574,7 @@ function Learningmypage(){
             <div className={styles.topContent}>
                 {login.auth === 'parents' ?
                 <div className={styles.subject}>
-                    <select value={student} onChange={studentChange} className="studentplus" id="studentplus">
+                    <select value={student} onChange={studentChange} className="studentplus mypageselect" id="studentplus">
                         <option value=''>자녀선택</option>
                     </select>
                 </div>
@@ -520,14 +582,16 @@ function Learningmypage(){
                 <div></div>
                 }
 
-                <div className={styles.search}>      
-                    <select value={choice} onChange={choiceChange}>
-                        <option value="">검색</option>
-                        <option value="eduname">교육기관</option>
-                        <option value="subject">과목</option>
-                    </select>
+                <div className={styles.search}>
+                    <div>  
+                        <select class="mypageselect" value={choice} onChange={choiceChange}>
+                            <option value="">검색</option>
+                            <option value="eduname">교육기관</option>
+                            <option value="subject">과목</option>
+                        </select>
+                        <button onClick={searchBtn} className={styles.searchBtn}>검색</button>
+                    </div> 
                     <input value={search} onChange={searchChange} placeholder="검색어를 입력하세요"/>
-                    <button onClick={searchBtn} className={styles.searchBtn}>검색</button>
                 </div>
             </div>
             <React.Fragment>
@@ -535,51 +599,46 @@ function Learningmypage(){
                     <button onClick={openModal2} className={`${styles.mypageBtn}`}>학습 추가 신청</button>
                 </div>
                 <Searchmodal open2={modalOpen2} close2={closeModal2} yesclose2={yescloseModal2} header2="학습 추가 신청">
-                <main>
-                    <table border="1" align="center">
-                        <colgroup>
-                            <col width="100" /><col width="200" /><col width="50" />
-                        </colgroup>
-                        <tr>
-                            <th>코드</th>
-                            <td align="left" colSpan="2">
-                                <div>
-                                    <input style={{ width:"150px"}} value={edu_code} onChange={(e) => setEdu_code(e.target.value)} placeholder="코드를 입력해주세요" ></input>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th align="left">
-                                <div >교육기관명</div>
-                            </th>
-                            <td align="left" colSpan="2">
-                                {edu_name === ""
-                                    ? <div style={{ fontSize: "10px" }}>올바른 코드를 입력해주세요</div>
-                                    : <div style={{ fontSize: "10px", color: 'blue' }}>{edu_name}</div>}
+                <main class="modaltext">
+                    <div class="input-div one">
+                        <div class="i">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="div">
+                            <input type="text" class="input" value={edu_code} onChange={(e)=>setEdu_code(e.target.value)} placeholder="교육기관 코드를 입력해주세요" />
+                        </div>
+                    </div>
+                    {edu_code.length > 0
+                    ? <div>
+                        {edu_name === ""
+                        ? <div style={{ fontSize: "10px" }}>올바른 코드를 입력해주세요</div>
+                        : <div>교육기관명 :&nbsp;&nbsp; <span style={{ color: 'blue' }}>{edu_name}</span></div>}</div>
+                    : <div></div>}
+                    
+                    <br/>
+                    <div class="divflex">
+                        <h5 class="regitag">과목</h5>   
+                        <select className="subplus regiinput" id="subplus" onChange={subcodecheck}>
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>과목</th>
-                            <td align="left">
-                                <select className="subplus" id="subplus" onChange={subcodecheck}>
-
-                                </select>&nbsp;&nbsp;
-                                <button onClick={subjectadd}>추가</button>
-                            </td>   
-                        </tr>
-                    </table>
+                        </select>&nbsp;&nbsp;
+                    </div>
+                    <br/>
+                    <button class="modalbtn" onClick={subjectadd}>추가</button>
+                    <br/>
                     <br/>
 
-                    <table border="1" className="subplus2" id="subplus2">
+                    <table border="1" class="table table-hover">
                         <colgroup>
                             <col width="50" /><col width="50" /><col width="200" /><col width="100" />
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>선택</th><th>번호</th><th>교육기관</th><th>과목</th>
+                                <th class="text-center">선택</th><th class="text-center">번호</th><th class="text-center">교육기관</th><th class="text-center">과목</th>
                             </tr>
                         </thead>
+                        <tbody className="subplus2" id="subplus2">
+
+                        </tbody>
                     </table>
                     
                 </main>        

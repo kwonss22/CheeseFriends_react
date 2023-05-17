@@ -7,6 +7,9 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAnglesRight } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
@@ -99,6 +102,11 @@ function TeacherManage(){
         }
         
     }
+    const activeEnter = (e) => {
+        if(e.key === "Enter") {
+            searchBtn()
+        }
+    }
 
     useEffect(function(){
         getTeacherList("", "", 0);
@@ -111,7 +119,7 @@ function TeacherManage(){
                 // 다른 props가 있다면 여기에 추가
             };
             const strProps = JSON.stringify(props); // 객체를 문자열로 변환합니다.
-            window.open(`/usermailwrite?props=${strProps}`, '_blank', 'width=800px,height=700px,scrollbars=yes');
+            window.open(`/usermailwrite?props=${strProps}`, '_blank', 'width=850px,height=700px,scrollbars=yes');
         }else{
             alert("회원을 선택해주세요");
         }
@@ -121,17 +129,20 @@ function TeacherManage(){
     return(
         <div>
             <div className={manage.topContent}>
-                <div className={manage.search}>       
-                    <select vlaue={choice} onChange={(e)=>setChoice(e.target.value)}>
-                        <option value="">검색</option>
-                        <option value="eduCode">학원코드</option>
-                        <option value="eduName">학원이름</option>
-                        <option value="id">아이디</option>
-                    </select>
-                    <input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="검색어를 입력하세요"/>
-                    <button onClick={searchBtn} className={manage.searchBtn}>검색</button>
+                <h2>회원관리</h2>
+                <div className={manage.search}>  
+                    <div>    
+                        <select vlaue={choice} onChange={(e)=>setChoice(e.target.value)}>
+                            <option value="">검색</option>
+                            <option value="eduCode">학원코드</option>
+                            <option value="eduName">학원이름</option>
+                            <option value="id">아이디</option>
+                        </select>
+                        <button onClick={searchBtn} className={manage.searchBtn}>검색</button>
+                    </div>
+                    <input value={search} onChange={(e)=>setSearch(e.target.value)} onKeyPress={(e) => activeEnter(e)} placeholder="검색어를 입력하세요"/>
                 </div>
-                <button onClick={openMailWrite} className={manage.eduAdd}>쪽지쓰기</button>
+                <button onClick={openMailWrite} className={manage.eduAdd}><em><FontAwesomeIcon icon={faCirclePlus} /></em><span>쪽지쓰기</span></button>
             </div>
 
             <table className={`${manage.manageList} ${manage.teacherlist}`}>
@@ -165,8 +176,8 @@ function TeacherManage(){
                                     <td>{t.email}</td>
                                     <td>{t.phone}</td>
                                     <td>
-                                        <Link to={`/adminpage/teaupdate/${t.id}`} className={manage.detail}>보기</Link>
-                                        <button onClick={() => deleteBtn(t.id)} className={manage.Del}>삭제</button>
+                                        <Link to={`/adminpage/teaupdate/${t.id}`} className={manage.detail}><FontAwesomeIcon icon={faCircleInfo} /></Link>
+                                        <button onClick={() => deleteBtn(t.id)} className={manage.Del}><FontAwesomeIcon icon={faTrashCan} /></button>
                                     </td>
                                 </tr>
                             )

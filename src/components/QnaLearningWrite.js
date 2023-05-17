@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import './asset/css/LectureWrite.css';
 
@@ -6,36 +6,84 @@ import axios from "axios";
 
 
 export default function QnaLearningWrite() {
-
-    const [subject, setSubject] = useState('');
+    const [id, setId] = useState("");
     const [title, setTitle] = useState('');
     const [writer, setWriter] = useState('');
     const [content, setContent] = useState('');
 
-    const login = JSON.parse(localStorage.getItem("login"));
-    const userName = login.name;
-
+    const loginInfo = JSON.parse(localStorage.getItem("login"));
+    const userId = loginInfo?.id;
+    const userName = loginInfo?.name;
+    const [currentUserId, setCurrentUserId] = useState('');
+    const [subject, setSubject] = useState(
+        localStorage.getItem("subject")
+    );
+    const [eduCode, setEduCode] = useState([]);
+    const [subCode, setSubCode] = useState("");
+    const [userEdu, setUserEdu] = useState(
+      localStorage.getItem("userEdu")
+    );
     const navigate = useNavigate();
    
     const resetBtn = () => {
         navigate('/cheesefriends/learning/QnaLearningList');
     }
 
-    const SelectBox = () => {
-        return (
-            <select onChange={changeSelectOptionHandler} value={subject} className='inputsubject'>
-                <option key="kor" value="국어">국어</option>
-                <option key="math" value="수학">수학</option>
-                <option key="eng" value="영어">영어</option>
-                <option key="social" value="사회">사회</option>
-                <option key="sci" value="과학">과학</option>
-            </select>
-        );
-    };
+    const [userSubjects, setUserSubjects] = useState([]);
+    const [edu_code, setEdu_code] = useState("");
 
+    const [subNames, setSubNames] = useState([]);
+
+    function getEduCode(){
+      axios.get("http://localhost:3000/homeEduCode", { params:{ "id":userId }})
+      .then(function(resp){
+          console.log(resp.data);
+          setEduCode(resp.data);
+      })
+      .catch(function(err){
+          alert("err");
+          console.log(err);
+      })
+    }
+    useEffect(function(){
+      getEduCode();
+    },[id]);
+    
+    // 과목 받아오기
+    function subcodereceive(){
+      setSubCode("");
+      axios.get("http://localhost:3000/subselect", { params:{ "id":userId, "eduCode":userEdu}})
+      .then(function(resp){
+
+        console.log(resp.data);
+        setSubNames(resp.data);
+          
+      })
+      .catch(function(err){
+          console.log(err);
+          alert('err');
+      }) 
+    }
+   useEffect(()=>{
+    if(eduCode !== ""){
+        subcodereceive();
+        return;
+    }
+     }, [eduCode]) 
+
+     const SelectBox = () => {
+      return (
+        <select onChange={changeSelectOptionHandler} value={subject} className='inputsubject'>
+          {Array.isArray(subNames) && subNames.map((sub) => (
+            <option key={sub.seq} value={sub.subname}>{sub.subname}</option>
+          ))}
+        </select>
+      );
+    };
     const changeSelectOptionHandler = (e) => {
         setSubject(e.target.value);
     };
+
 
     const onSubmit = (e) => {
         e.preventDefault();

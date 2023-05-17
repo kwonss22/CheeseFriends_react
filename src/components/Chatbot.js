@@ -12,23 +12,27 @@ function Chatbot() {
     const scrollRef = useRef();
 
     function Papago() {
-        let alignleft = document.createElement('div');
-        alignleft.setAttribute('align', 'right');
+        axios.post("http://localhost:3000/papago", null, { params: { "msg": umessage } })
+          .then((resp) => {
+            const botMsgContainers = document.querySelectorAll('.botmsgContainer');
 
-
-
-        axios.post("http://localhost:3000/papago", null, {params:{ "msg":umessage }} )
-        .then((resp) => {
-            const botMsgContainer = document.querySelector('.botmsgContainer');
             const newMsgElem = document.createElement('div');
             newMsgElem.setAttribute('align', 'right');
             newMsgElem.className = 'botmsg';
             newMsgElem.textContent = JSON.stringify(resp.data);
-            botMsgContainer.appendChild(newMsgElem);
-          });
-      
-    }  
+            newMsgElem.style.backgroundColor = '#b4e4ff';
+            newMsgElem.style.marginBottom = '20px';
+            newMsgElem.style.marginLeft = '216px';
+            newMsgElem.style.color = '#434343';
 
+            // 두 번째 botMsgContainer 다음에 newMsgElem 추가
+            botMsgContainers[2].insertAdjacentHTML('afterend', newMsgElem.outerHTML);
+
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      
+ 
+          });
+      }
     function sendBtnClick() {
         let elementUser = document.createElement('div');
         elementUser.setAttribute('align', 'right');
@@ -42,9 +46,11 @@ function Chatbot() {
         chatbox.appendChild(elementUser);
         chatbox.appendChild(document.createElement('br'));
 
+        const messageToSend = umessage; // 현재 umessage 값을 저장
+
         setUmessage('');
 
-        axios.post("http://localhost:3000/chatBot", null, { params: { "msg": umessage } })
+        axios.post("http://localhost:3000/chatBot", null, { params: { "msg": messageToSend } })
             .then(function (resp) {
                 ChatbotAnswer(resp.data);
                 scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -156,7 +162,7 @@ function Chatbot() {
             </div>
 
             <div className="chatbox" id="chatbox" ref={scrollRef}>
-
+                <div className="botmsgContainer"></div>
             </div>
 
             <div className="myform">

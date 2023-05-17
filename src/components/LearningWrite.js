@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './asset/css/LectureWrite.css'
 
 import axios from "axios";
@@ -7,85 +7,89 @@ import { useNavigate } from 'react-router';
 
 function LearningWrite() {
 
-    const [subject, setSubject] = useState('');
     const [title, setTitle] = useState('');
     const [writer, setWriter] = useState('');
     const [content, setContent] = useState('');
+    const [file, setFile] = useState(null);
+    const [filename, setFilename] = useState("");
+    const [newfilename, setNewfilename] = useState("");
+    const [inputref, setInputRef] = useState("");
+
 
     const login = JSON.parse(localStorage.getItem("login"));
     const userName = login.name;
 
+    const [subject, setSubject] = useState(
+        localStorage.getItem("subject")
+    );
     const navigate = useNavigate();
 
     const onSubmit = (e) => {
-    e.preventDefault();
-    // alert('onSubmit');
+        e.preventDefault();
+     //   alert('onSubmit~~~');
+        
+        // file + form field -> 짐을 싼다        
+        const formData = new FormData();
+            formData.append("subject", subject);
+           formData.append("title", title);
+           formData.append("writer", userName);
+           formData.append("content", content);
+ 
+    
+          formData.append("uploadFile", document.frm.uploadFile.files[0]);
 
-    // file + form field -> 짐을 싼다
-    let formData = new FormData();
-    formData.append("subject", subject);
-    formData.append("title", title);
-    formData.append("writer", writer);
-    formData.append("content", content);
-
-    formData.append("uploadFile", document.frm.uploadFile.files[0]);
-
-    // 보내자!
-    axios.post("http://localhost:3000/fileUpload", formData)
-    .then(res=>{
-       console.log(res.data);
-       alert('자료 업로드에 성공했습니다');
-       navigate('/cheesefriends/learning');
-    })
-    .catch(function(error){
-       alert('자료 업로드에 실패했습니다');
-    });
-
-    axios.post('http://localhost:3000/writeLearning', null, { params: {
-                subject,
-                title,
-                writer:userName,
-                content
-        }})
-            .then( resp => {
-            console.log(resp);
-            navigate('/cheesefriends/learning');
+          axios.post('http://localhost:3000/fileUpload', formData)
+            .then(resp => {
+              console.log(resp.data);
+              alert('성공적으로 등록되었습니다');
+              navigate('/cheesefriends/learning');
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+              console.log(err);
+          })
+      }
 
-  }
-
-  // download
-  const download = async () => {
-    let filename = "zoom.txt";
-
-    const url = "http://localhost:3000/fileDownload?filename=" + filename;
-
-    // a tag 를 생성 + 자동실행
-    /*
-    const download = document.createElement('a');   // <a href='' 
-    download.setAttribute('href', url);
-    download.setAttribute('download', filename);
-    download.setAttribute('type', 'application/json');
-    download.click();
-    */
-
-    // react에서 window를 붙여줘야 한다
-    window.location.href = url;
-  }
 
     const resetBtn = () => {
         navigate('/cheesefriends/learning');
     }
+
     
+    const [userSubjects, setUserSubjects] = useState([]);
+    const [edu_code, setEdu_code] = useState("");
+
+    useEffect (()=>{
+        axios.post("http://localhost:3000/eduselect", null, { params:{ "id":login.id}})
+        .then(function(resp){   
+            console.log(resp.data); 
+
+            setEdu_code(resp.data.educode);
+            
+            axios.post("http://localhost:3000/subselect", null, { params:{ "id":login.id, "educode":resp.data.educode}})
+            .then(function(resp){   
+                console.log(resp.data); 
+                setUserSubjects(resp.data);
+            })
+            .catch(function(err){
+                console.log(err);
+                alert('err')
+            })
+
+        })
+        .catch(function(err){
+            console.log(err);
+            alert('err')
+        })
+
+        
+    },[]);
+
     const SelectBox = () => {
         return (
             <select onChange={changeSelectOptionHandler} value={subject} className='inputsubject'>
-                <option key="kor" value="국어">국어</option>
-                <option key="math" value="수학">수학</option>
-                <option key="eng" value="영어">영어</option>
-                <option key="social" value="사회">사회</option>
-                <option key="sci" value="과학">과학</option>
+                {userSubjects.map((subject)=> (
+                    <option key={subject.subCode} value={subject.subname}>{subject.subname}</option>
+                ))}
             </select>
         );
     };
@@ -120,7 +124,7 @@ function LearningWrite() {
                     <>
                     내용
                     </>
-                    <input type="file" name="uploadFile" className='inputfile' accept="*"  />
+                    <input type="file" name="uploadFile" className='inputfile' accept="*" />
                     <br/>
                     <textarea id='content' className='lecontent' name='content'
                         value={content} onChange={(e) => setContent(e.target.value)} />

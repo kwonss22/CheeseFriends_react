@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { faCheese } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import './asset/css/ServiceAnswer.css';
+import './asset/css/QnaLearningAnswer.css';
 import axios from 'axios';
 
 function QnaLearningAnswer(){
@@ -29,35 +29,32 @@ function QnaLearningAnswer(){
     const bbsData = async(seq) => {
         const response = await axios.get('http://localhost:3000/getLearningQna', { params:{"seq":seq} });
 
-        // console.log("bbs:" + JSON.stringify(response.data));
         setBbs(response.data);
-
-        setLoading(true);   // 여기서 rendering 해 준다
+        setLoading(true);
     }
 
      useEffect(()=>{
          bbsData(params.seq); 
-
      }, [params.seq, navigate])
 
-
     function answerBbs(){
-        
         axios.post('http://localhost:3000/answerQna', null, { params: {
             seq:bbs.seq,
             title,
-            subject,
+            subject:bbs.subject,
             writer:userName,
             content
         }})
         .then( resp => {
             console.log(resp);
-        if(resp.data === "YES"){
+ 
+            if(resp.data === "YES"){
                 alert("답글이 성공적으로 등록되었습니다");
-            navigate('/cheesefriends/learning/QnaLearningList');
-        }else{
-            alert("답글이 등록되지 않았습니다");
-        }
+
+                navigate(`/cheesefriends/learning/QnaLearningList`);
+            }else{
+                alert("답글이 등록되지 않았습니다");
+            }
         })
         .catch(err => console.log(err));   
     }

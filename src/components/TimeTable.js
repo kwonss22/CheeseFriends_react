@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react"
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import styles from './asset/css/timeTableDetail.module.css';
 
@@ -68,7 +70,7 @@ function TimeTable(){
                     const timeNum = timeCheck(start, end);
         
                     // rowspan으로 합쳐주기 위해 첫 칸만 입력
-                    newEmptyTable[timeNum[0]][dayNum] = `${timelist[i].subName}/${timelist[i].subStartTime}-${timelist[i].subEndTime}`;
+                    newEmptyTable[timeNum[0]][dayNum] = `${timelist[i].subName}(${timelist[i].classGrade})/${timelist[i].subStartTime}-${timelist[i].subEndTime}`;
                     
                     // rowspan 저장해두기
                     newRowspansave.push({
@@ -162,8 +164,8 @@ function TimeTable(){
     return (
         <div className={styles.wrap}>
             <div className={styles.btnWrap}>
-                <Link to="/cheesefriends/testmain/subjectadd">과목추가</Link>
-                <Link to="/cheesefriends/testmain/subtimemanage">강의시간추가</Link>
+                <Link to="/cheesefriends/testmain/subjectadd"><em><FontAwesomeIcon icon={faCirclePlus} /></em><span>과목추가</span></Link>
+                <Link to="/cheesefriends/testmain/subtimemanage"><em><FontAwesomeIcon icon={faCirclePlus} /></em><span>강의시간추가</span></Link>
             </div>
         <table className={styles.timeTable}>
             <thead>

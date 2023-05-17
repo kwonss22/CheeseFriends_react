@@ -309,7 +309,7 @@ const DataAnalysisTeacher = () => {
                                     key={subject.subCode}
                                     className={selectedSubject === subject.subCode ? 'active' : ''}
                                     onClick={() => setSelectedSubject(subject.subCode)}
-                                    style={{ minWidth: '80px', textAlign: 'center' }}
+                                    style={{ textAlign: 'center' }}
                                 >
                                     {subject.subName}
                                 </li>
@@ -322,7 +322,7 @@ const DataAnalysisTeacher = () => {
                             placeholder="학생 이름 입력"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
-                            style={{ marginLeft: '300px', width: '100px' }}
+                            style={{ width: '100px' }}
                         />
                         <a
                             href="#"

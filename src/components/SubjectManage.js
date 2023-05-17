@@ -7,6 +7,8 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAnglesRight } from "@fortawesome/free-solid-svg-icons";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
@@ -67,6 +69,11 @@ function SubjectManage(){
         }
         
     }
+    const activeEnter = (e) => {
+        if(e.key === "Enter") {
+            searchBtn()
+        }
+    }
 
     useEffect(function(){
         getSubList("", "", 0);
@@ -76,17 +83,20 @@ function SubjectManage(){
     return(
         <div>
             <div className={manage.topContent}>
-                <div className={manage.search}>       
-                    <select vlaue={choice} onChange={(e)=>setChoice(e.target.value)}>
-                        <option value="">검색</option>
-                        <option value="eduCode">학원코드</option>
-                        <option value="eduName">학원이름</option>
-                        <option value="subCode">과목코드</option>
-                        <option value="subName">과목이름</option>
-                        <option value="id">아이디</option>
-                    </select>
-                    <input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="검색어를 입력하세요"/>
-                    <button onClick={searchBtn} className={manage.searchBtn}>검색</button>
+                <h2>과목관리</h2>
+                <div className={manage.search}>
+                    <div>   
+                        <select vlaue={choice} onChange={(e)=>setChoice(e.target.value)}>
+                            <option value="">검색</option>
+                            <option value="eduCode">학원코드</option>
+                            <option value="eduName">학원이름</option>
+                            <option value="subCode">과목코드</option>
+                            <option value="subName">과목이름</option>
+                            <option value="id">아이디</option>
+                        </select>
+                        <button onClick={searchBtn} className={manage.searchBtn}>검색</button>
+                    </div>  
+                    <input value={search} onChange={(e)=>setSearch(e.target.value)} onKeyPress={(e) => activeEnter(e)} placeholder="검색어를 입력하세요"/>
                 </div>
             </div>
 
@@ -116,8 +126,8 @@ function SubjectManage(){
                                     <td>{sub.educatorName}</td>
                                     <td>{sub.name}</td>
                                     <td>
-                                        <Link to={`/adminpage/subupdate/${sub.subCode}`} className={manage.Edit}>수정</Link>
-                                        <button onClick={() => deleteBtn(sub.subCode)} className={manage.Del}>삭제</button>
+                                        <Link to={`/adminpage/subupdate/${sub.subCode}`} className={manage.Edit}><FontAwesomeIcon icon={faPen} /></Link>
+                                        <button onClick={() => deleteBtn(sub.subCode)} className={manage.Del}><FontAwesomeIcon icon={faTrashCan} /></button>
                                     </td>
                                 </tr>
                             )

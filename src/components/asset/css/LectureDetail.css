@@ -4,9 +4,9 @@
 .lecdeMain {
     width: 1200px;
     height: 500px;
-    margin: -10px auto 0;
+    margin: 50px 295px 0 auto;
     align-items: center;
-    font-size: 19px;
+    font-size: 18px;
 }
 .lech2 {
     font-size: 2em;
@@ -33,4 +33,5 @@
     background:linear-gradient(180deg,rgba(255,255,255,0) 40%, #fbca73 50%);
     padding-top: 10px;
     padding-left: 7px;
+
 }

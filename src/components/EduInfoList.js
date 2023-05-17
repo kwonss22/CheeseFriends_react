@@ -12,6 +12,10 @@ export default function EduInfoList() {
 
     const movePage = useNavigate();
 
+    const loginInfo = JSON.parse(localStorage.getItem("login"));
+    const userId = loginInfo?.id;
+    const userAuth = loginInfo?.auth;
+
     function eduwrite() {
         movePage('/cheesefriends/learning/EduInfoWrite');
     }
@@ -19,14 +23,13 @@ export default function EduInfoList() {
     function getEduInfoList() {
         axios.get("http://localhost:3000/eduInfoList")
         .then(function(resp){
-            setEduInfoList(resp.data);
-            console.log(resp.data);
+            setSubList(resp.data.list);
+            setTotalCnt(resp.data.cnt);
             
         })
         .catch(function(err){
             // alert(err);
         })
-
     }
 
     useEffect(function(){
@@ -38,61 +41,49 @@ export default function EduInfoList() {
     const [search, setSearch] = useState('');
 
         //paging
-        const [page, setPage] = useState(1);
-        const [totalCnt, setTotalCnt] = useState(10);
- 
-    function getSubList(choice, search, page){
-        axios.get("http://localhost:3000/eduInfoList", { params:{"choice":choice, "search":search, "pageNumber":page } })
-        .then(function(resp) {
-            // 데이터가 있을 경우에만 subList 상태를 업데이트
-            if (resp.data.list) {
-                setSubList(resp.data.list);
-            }
-        })
-        .catch(function(err){
-            alert(err);
-        })
-    }
+    const [page, setPage] = useState(1);
+    const [totalCnt, setTotalCnt] = useState(0);
 
-    function searchBtn(){
-        getSubList(choice, search, 0);
-    }
+    function getSubList(choice, search, page) {
+        axios.get("http://localhost:3000/eduInfoList", {  params: { choice, search, pageNumber: page }, })
+          .then(function(resp) {
+            console.log(resp.data.list);
+            setTotalCnt(resp.data.cnt);
+            setSubList(resp.data.list);
 
-    function pageChange(page) {
-        setPage(page);
-        getSubList(choice, search, page-1);
-    }
-
-    useEffect(function(){
-        getSubList("","", 0);
-        getTotalCount();
-    }, []);
-
-    function getTotalCount() {
-        axios
-          .get("http://localhost:3000/eduInfoListCount")
-          .then(function (resp) {
-            setTotalCnt(resp.data.count);
           })
-          .catch(function (err) {
+          .catch(function(err) {
             alert(err);
           });
       }
-    
+         
+      useEffect(function() {
+        // 페이지가 로드될 때 초기 목록을 가져오기 위해 한 번 호출합니다.
+        getSubList(choice, search, page-1);
+      }, [choice, search, page]);
+      
+         
+      function searchBtn() {
+        getSubList(choice, search, 0);
+      }
+      
+      function handlePageChange(page) {
+        setPage(page);
+        getSubList(choice, search, page-1);
+      }
 
-    
     return (
 
     <div className='eduinfolist'>
-        <div style={{marginTop:"-627PX"}}>
-                <h2 style={{marginLeft:"34px", color:"#434343", marginTop:"-15px", fontSize:"2em", fontWeight:"bold"}}>교육정보</h2>
-                <p>최신 교육 정보를 제공합니다.</p>
-                <div style={{width:"250px"}}>
-                     {/* {userAuth === 'admin' && (  */}
+        <div className='shelterPageWrap'>
+        <div style={{width:"247.94px", textAlign:"center", marginTop:"-204px"}}>
+                <h2 className='maintitle' style={{marginTop:"-160px"}}>교육정보</h2>
+                <p style={{marginTop:"8px"}}>최신 교육 정보를 제공합니다.</p>
+                    {userAuth === 'admin' && (  
                         <button type="button" className="learnBtn"  onClick={eduwrite}>
                             글쓰기
                         </button>
-                    {/* )}  */}
+                      )}   
                 </div>
             </div>  
 
@@ -100,7 +91,7 @@ export default function EduInfoList() {
         <div style={{display:"block", width:"1000px", marginTop:"25px", marginLeft:"40px"}}>
             <div style={{display:"flex", marginTop:"-140px", justifyContent:"flex-end"}}>
                     
-                    <select vlaue={choice} onChange={(e)=>setChoice(e.target.value)}
+                    <select value={choice} onChange={(e)=>setChoice(e.target.value)}
                     style={{border:"none", borderBottom:"1px solid lightgray", height:"31px", marginTop:"14px", marginRight:"6px" }}>
                         <option value="">검색</option>
                         <option value="subject">과목</option>
@@ -122,11 +113,12 @@ export default function EduInfoList() {
                     return (
 
                     <div key={i}  className={itemClassName}
-                        style={{display:"inline-block", padding:"6px", border:"2px solid lightgray", textAlign:"left", width:"280px", height:"150px"}}>
+                        style={{display:"inline-block", padding:"6px", paddingBottom:"0px", border:"2px solid #fbca73", textAlign:"left", width:"300px", height:"200px"}}>
                         <p style={{fontWeight:"bold", marginTop:"8px"}}>{list.title}</p>
                         <p style={{marginTop:"8px"}}>{list.subject}</p>
                         <p style={{marginTop:"8px"}}> {list.regdate}</p>
-                        <button type="button" className='edubtn'>
+
+                        <button type="button" className='cardbtn'>
                             <Link style={{textDecoration:"none"}} to={`/cheesefriends/learning/EduInfoDetail/${list.seq}`}>확인하기</Link></button>
                     </div>
                 )
@@ -142,7 +134,7 @@ export default function EduInfoList() {
             lastPageText={<FontAwesomeIcon icon={faAnglesRight} />}
             prevPageText={<FontAwesomeIcon icon={faAngleLeft} />}
             nextPageText={<FontAwesomeIcon icon={faAngleRight} />}
-            onChange={pageChange} />
+            onChange={handlePageChange} />
      
        </div>
        </div>

@@ -54,7 +54,7 @@ function Home(){
                                 <span></span>
                                 <span>출석체크</span>
                             </Link>
-                        : <Link to="/cheesefriends/testmain/DataAnalysis" className={styles.cbox}  onClick={()=>localStorage.setItem("mypageBtnActive", "DataAnalysisTeacher")}>
+                        : <Link to="/cheesefriends/testmain/DataAnalysis" className={styles.cbox}  onClick={()=>localStorage.setItem("mypageBtnActive", "DataAnalysis")}>
                             <span></span>
                             <span>출결분석</span>
                         </Link>
@@ -73,7 +73,11 @@ function Home(){
                         <Link to="/cheesefriends/testmain/email" className={styles.cbox} onClick={()=>localStorage.setItem("mypageBtnActive", "email")}>
                             <span></span>
                             <span>쪽지</span>
-                            <span>{unreducedMail}</span>
+                            {unreducedMail === 0 ?
+                            <></>
+                            :
+                            <span className={styles.unreduced}>{unreducedMail}</span>
+                            }
                         </Link>
                     </div>
                 </div>
@@ -86,14 +90,14 @@ function Home(){
                 <p>궁금해하는 교육정보 모아모아 한 눈에!</p>
             </div>
             <Slider {...eduSettings}>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
-                    <div><Link className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/thumbEx.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/1" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-1.png`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/2" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-2.png`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/3" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-3.png`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/4" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-4.png`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/5" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-5.png`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/6" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-6.jpg`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/7" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-7.png`}  style={{width:'100%'}} alt=""/></Link></div>
+                    <div><Link to="/cheesefriends/learning/EduInfoDetail/8" className={styles.slideContent}><img src={`${process.env.PUBLIC_URL}/img/eduinfo-8.png`}  style={{width:'100%'}} alt=""/></Link></div>
             </Slider>
         </div>
         <div className={styles.containerBg}>
@@ -103,9 +107,15 @@ function Home(){
                     <p>열심히 공부한 당신! 옹달샘에서 잠시 쉬어가요~</p>
                 </div>
                 <div className={styles.playBox}>
-                    <Link to="/cheesefriends/shelterpage/playgame"><img src={`${process.env.PUBLIC_URL}/img/game1.jpg`}  style={{width:'100%'}} alt="playgame1"/></Link>
-                    <Link to="/cheesefriends/shelterpage/playgame1"><img src={`${process.env.PUBLIC_URL}/img/game2.jpg`}  style={{width:'100%'}} alt="playgame2"/></Link>
-                    <Link to="/cheesefriends/shelterpage/playgame2"><img src={`${process.env.PUBLIC_URL}/img/game3.jpg`}  style={{width:'100%'}} alt="playgame3"/></Link>
+                    <Link to="/cheesefriends/shelterpage/playgame">
+                        <img src={`${process.env.PUBLIC_URL}/img/game1.jpg`}  style={{width:'100%'}} alt="playgame1"/>
+                    </Link>
+                    <Link to="/cheesefriends/shelterpage/playgame1" onClick={()=>localStorage.setItem("btnActive", "playgame1")} >
+                        <img src={`${process.env.PUBLIC_URL}/img/game3.jpg`}  style={{width:'100%'}} alt="playgame1"/>
+                    </Link>
+                    <Link to="/cheesefriends/shelterpage/playgame2" onClick={()=>localStorage.setItem("btnActive", "playgame2")}>
+                        <img src={`${process.env.PUBLIC_URL}/img/game2.jpg`}  style={{width:'100%'}} alt="playgame2"/>
+                    </Link>
                 </div>
             </div>
         </div>
